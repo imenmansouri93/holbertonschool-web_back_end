@@ -10,7 +10,7 @@ from typing import Generator
 
 async def async_generator() -> Generator[float, None, None]:
     """
-    Asynchronous  that yields a random number between 0 & 10 after waiting for 1 scd
+    Asynchronousthatyields a random number between 0 & 10 after waiting for 1 scd
     """
     for _ in range(10):
         await asyncio.sleep(1)  # Asynchronously wait for 1 second
