@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
-"""
- SQLAlchemy model representing the 'users' table.
-"""
+
 
 Base = declarative_base()
 
@@ -11,13 +9,12 @@ Base = declarative_base()
 class User(Base):
     """
     SQLAlchemy model representing the 'users' table.
-
     Attributes:
-    - id: INTEGER (auto-incremented primary key)
+    - id: INTEGER
     - email: VARCHAR(250)
     - hashed_password: VARCHAR(250)
-    - session_id: VARCHAR(250) (nullable)
-    - reset_token: VARCHAR(250) (nullable)
+    - session_id: VARCHAR(250)
+    - reset_token: VARCHAR(250)
     """
     __tablename__ = 'users'
 
