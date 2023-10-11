@@ -9,12 +9,6 @@ Base = declarative_base()
 class User(Base):
     """
     SQLAlchemy model representing the 'users' table.
-    Attributes:
-    - id: INTEGER
-    - email: VARCHAR(250)
-    - hashed_password: VARCHAR(250)
-    - session_id: VARCHAR(250)
-    - reset_token: VARCHAR(250)
     """
     __tablename__ = 'users'
 
