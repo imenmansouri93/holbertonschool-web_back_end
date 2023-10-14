@@ -44,22 +44,19 @@ class DB:
         """
         if kwargs is None:
             return InvalidRequestError
-        try:
-            user = self._session.query(User).filter_by(**kwargs).first()
-            return user
-        except NoResultFound:
-            return None
         
-    def update_user(self, user_id, **kwargs):
+        user = self._session.query(User).filter_by(**kwargs).first()
+        if user is None:
+            raise NoResultFound
+        return user
+        
+    def update_user(self, user_id, **kwargs) -> None:
         """
         update the user
         """
-        user = self.find_user_by(user_id)
-        if user is None:
-            return None
+        _id = self.find_user_by(id=user_id)
         for key, value in kwargs.items():
-            if key in user:
-                user[key] = value
-            else:
+            if not hasattr(_id, key):
                 raise ValueError
-        return None 
+            setattr (_id, key, value)
+        self._session.commit()
