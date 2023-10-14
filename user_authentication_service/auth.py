@@ -6,6 +6,7 @@ from uuid import uuid4
 from db import DB
 from user import User
 
+
 def _hash_password(password: str) -> str:
     """ takes in a password string arguments and returns a string
         The returned string is a salted hash of the input password,
