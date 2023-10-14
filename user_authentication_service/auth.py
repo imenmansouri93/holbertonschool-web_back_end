@@ -39,7 +39,6 @@ class Auth():
         else:
             raise ValueError('User {email} already exists')
 
-
     def valid_login(self, email: str, password: str) -> bool:
         """ credentials validation, return a boolean """
         try:
