@@ -2,10 +2,9 @@
 from flask import Flask, jsonify, request, abort
 from auth import Auth
 import crypt
-from db import DB
 app = Flask(__name__)
 AUTH = Auth()
-db = DB()
+
 
 @app.route('/', methods=['GET'], strict_slashes=False)
 def welcome():
@@ -34,6 +33,7 @@ def login():
     session_id = AUTH.create_session(email)
     response = jsonify({'email': email, 'message': 'logged in'})
     response.set_cookie('session_id', session_id)
+    return response
 
 
 if __name__ == "__main__":
