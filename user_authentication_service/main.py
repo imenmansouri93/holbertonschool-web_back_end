@@ -1,54 +1,97 @@
 #!/usr/bin/env python3
+""" End-to-end integration test.
+    Use assert to validate the response’s expected
+    status code and payload (if any) for each task
 """
-Main file
-"""
-from db import DB
-from user import User#!/usr/bin/env python3
-"""
-Main file
-"""
-from db import DB
-from user import User
-
-from sqlalchemy.exc import InvalidRequestError
-from sqlalchemy.orm.exc import NoResultFound
+import requests
+URL = 'http://localhost:5000'
 
 
-my_db = DB()
-
-email = 'test@test.com'
-hashed_password = "hashedPwd"
-
-user = my_db.add_user(email, hashed_password)
-print(user.id)
-
-try:
-    my_db.update_user(user.id, hashed_password='NewPwd')
-    print("Password updated")
-except ValueError:
-    print("Error")
+def register_user(email: str, password: str) -> None:
+    """ test """
+    data = {"email": email, "password": password}
+    response = requests.post(f'{URL}/users', data=data)
+    assert response.status_code == 200, "Test fail"
+    print("Task validate: 'register_user'")
 
 
-from sqlalchemy.exc import InvalidRequestError
-from sqlalchemy.orm.exc import NoResultFound
+def log_in_wrong_password(email: str, password: str) -> None:
+    """ test """
+    data = {"email": email, "password": password}
+    response = requests.post(f'{URL}/sessions', data=data)
+    assert response.status_code == 401, "Test fail"
+    print("Task validate: 'log_in_wrong_password'")
 
 
-my_db = DB()
+def profile_unlogged() -> None:
+    """ test """
+    data = {"session_id": ""}
+    response = requests.get(f'{URL}/profile', data=data)
+    assert response.status_code == 403, "Test fail"
+    print("Task validate: 'profile_unlogged'")
 
-user = my_db.add_user("test@test.com", "PwdHashed")
-print(user.id)
 
-find_user = my_db.find_user_by(email="test@test.com")
-print(find_user.id)
+def log_in(email: str, password: str) -> str:
+    """ test """
+    data = {"email": email, "password": password}
+    response = requests.post(f'{URL}/sessions', data=data)
+    assert response.status_code == 200, "Test fail"
+    print("Task validate: 'log_in'")
+    session_id = response.cookies.get("session_id")
+    return session_id
 
-try:
-    find_user = my_db.find_user_by(email="test2@test.com")
-    print(find_user.id)
-except NoResultFound:
-    print("Not found")
 
-try:
-    find_user = my_db.find_user_by(no_email="test@test.com")
-    print(find_user.id)
-except InvalidRequestError:
-    print("Invalid")        
+def profile_logged(session_id: str) -> None:
+    """ test """
+    data = {"session_id": session_id}
+    response = requests.get(f'{URL}/profile', cookies=data)
+    assert response.status_code == 200, "Test fail"
+    print("Task validate: 'profile_logged'")
+
+
+def log_out(session_id: str) -> None:
+    """ test """
+    data = {"session_id": session_id}
+    response = requests.delete(f'{URL}/sessions', cookies=data)
+    assert response.status_code == 200, "Test fail"
+    print("Task validate: 'log_out'")
+
+
+def reset_password_token(email: str) -> str:
+    """ test """
+    data = {"email": email}
+    response = requests.post(f'{URL}/reset_password', data=data)
+    assert response.status_code == 200, "Test fail"
+    print("Task validate: 'reset_password_token'")
+    reset_token = response.json().get("reset_token")
+    return reset_token
+
+
+def update_password(email: str, reset_token: str, new_password: str) -> None:
+    """ test """
+    data = {
+        "email": email,
+        "reset_token": reset_token,
+        "new_password": new_password
+    }
+    response = requests.put(f'{URL}/reset_password', data=data)
+    assert response.status_code == 200, "Test fail"
+    print("Task validate: 'update_password'")
+
+
+EMAIL = "guillaume@holberton.io"
+PASSWD = "b4l0u"
+NEW_PASSWD = "t4rt1fl3tt3"
+
+
+if _name_ == "_main_":
+
+    register_user(EMAIL, PASSWD)
+    log_in_wrong_password(EMAIL, NEW_PASSWD)
+    profile_unlogged()
+    session_id = log_in(EMAIL, PASSWD)
+    profile_logged(session_id)
+    log_out(session_id)
+    reset_token = reset_password_token(EMAIL)
+    update_password(EMAIL, reset_token, NEW_PASSWD)
+    log_in(EMAIL, NEW_PASSWD)
