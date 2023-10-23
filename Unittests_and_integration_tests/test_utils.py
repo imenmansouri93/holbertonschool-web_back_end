@@ -2,7 +2,7 @@
 import unittest
 from unittest.mock import patch
 from parameterized import parameterized
-from utils import access_nested_map, get_json  # Import the access_nested_map function from your utils module
+from utils import access_nested_map, get_json, memoize  # Import the access_nested_map function from your utils module
 
 class TestAccessNestedMap(unittest.TestCase):
     @parameterized.expand([
