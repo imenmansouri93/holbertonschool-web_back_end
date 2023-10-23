@@ -2,7 +2,7 @@
 """ Parameterize and patch as decorators, Mocking a property, More patching,
     Parameterize, Integration test: fixtures, Integration tests """
 import unittest
-from parameterized import parameterized
+from parameterized import parameterized, parameterized_class
 from client import GithubOrgClient
 from unittest.mock import patch, PropertyMock
 from fixtures import TEST_PAYLOAD
