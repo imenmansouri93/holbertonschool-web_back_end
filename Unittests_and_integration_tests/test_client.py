@@ -47,4 +47,3 @@ class TestGithubOrgClient(unittest.TestCase):
             self.assertEqual(test_return, ["holberton"])
             mock_get.assert_called_once
             mock_pub.assert_called_once
-
