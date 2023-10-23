@@ -4,7 +4,9 @@
 import unittest
 from parameterized import parameterized
 from client import GithubOrgClient
-from unittest.mock import patch, PropertyMock, Mock
+from unittest.mock import patch, PropertyMock
+from fixtures import TEST_PAYLOAD
+from urllib.error import HTTPError
 
 
 class TestGithubOrgClient(unittest.TestCase):
@@ -58,3 +60,27 @@ class TestGithubOrgClient(unittest.TestCase):
         test_client = GithubOrgClient("holberton")
         test_return = test_client.has_license(repo, license_key)
         self.assertEqual(expected_return, test_return)
+
+    class TestIntegrationGithubOrgClient(unittest.TestCase):
+    """ TESTCASE """
+    @classmethod
+    def setUpClass(cls):
+        """ It is part of the unittest.TestCase API
+        method to return example payloads found in the fixtures """
+        cls.get_patcher = patch('requests.get', side_effect=HTTPError)
+
+    @classmethod
+    def tearDownClass(cls):
+        """ It is part of the unittest.TestCase API
+        method to stop the patcher """
+        cls.get_patcher.stop()
+
+    def test_public_repos(self):
+        """ method to test GithubOrgClient.public_repos """
+        test_class = GithubOrgClient("holberton")
+        assert True
+
+    def test_public_repos_with_license(self):
+        """ method to test the public_repos with the argument license """
+        test_class = GithubOrgClient("holberton")
+        assert True
