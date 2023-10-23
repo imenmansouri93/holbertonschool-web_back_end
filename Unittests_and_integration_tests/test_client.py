@@ -47,3 +47,14 @@ class TestGithubOrgClient(unittest.TestCase):
             self.assertEqual(test_return, ["holberton"])
             mock_get.assert_called_once
             mock_pub.assert_called_once
+
+    """ inputs to test the functionality """
+    @parameterized.expand([
+        ({"license": {"key": "my_license"}}, "my_license", True),
+        ({"license": {"key": "other_license"}}, "my_license", False),
+        ])
+    def test_has_license(self, repo, license_key, expected_return):
+        """ to unit-test GithubOrgClient.has_license """
+        test_client = GithubOrgClient("holberton")
+        test_return = test_client.has_license(repo, license_key)
+        self.assertEqual(expected_return, test_return)
