@@ -62,7 +62,7 @@ class TestGithubOrgClient(unittest.TestCase):
         self.assertEqual(expected_return, test_return)
 
     class TestIntegrationGithubOrgClient(unittest.TestCase):
-    """ TESTCASE """
+        """ TESTCASE """
     @classmethod
     def setUpClass(cls):
         """ It is part of the unittest.TestCase API
