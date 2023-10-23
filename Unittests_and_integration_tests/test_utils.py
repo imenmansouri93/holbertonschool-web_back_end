@@ -2,7 +2,8 @@
 import unittest
 from unittest.mock import patch
 from parameterized import parameterized
-from utils import access_nested_map, get_json, memoize  # Import the access_nested_map function from your utils module
+from utils import access_nested_map, get_json, memoize
+
 
 class TestAccessNestedMap(unittest.TestCase):
     @parameterized.expand([
@@ -24,6 +25,7 @@ class TestAccessNestedMap(unittest.TestCase):
             access_nested_map(nested_map, path)
         self.assertEqual(error.exception.args[0], path[-1])
 
+
 class TestGetJson(unittest.TestCase):
     """ TESTCASE """
     """ to test the function for following inputs """
@@ -37,6 +39,7 @@ class TestGetJson(unittest.TestCase):
         mock_get.return_value = test_payload
         result = get_json(test_url)
         self.assertEqual(result, test_payload)
+
 
 class TestMemoize(unittest.TestCase):
     """ TESTCASE """
