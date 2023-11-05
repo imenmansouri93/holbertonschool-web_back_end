@@ -20,5 +20,16 @@ class Cache:
         return Random_key
 
 
-    def get(self, key):
-        return self._redis.get(key)
+    def get(self, key, fn=None):
+        """Retrieve the data from the cach"""
+        data = self._redis.get(key)
+        if data is not None and fn is not None:
+            return fn(data)
+        else:
+            return data
+    
+    def get_str(self, key):
+        return self.get(key, fn=lambda data: data.decode())
+
+    def get_int(self, key):
+        return self.get(key, fn=lambda data: int(data.decode()))
