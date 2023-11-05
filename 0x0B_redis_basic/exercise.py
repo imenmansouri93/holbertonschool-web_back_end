@@ -36,21 +36,19 @@ class Cache:
         return self.get(key, fn=lambda data: int(data.decode()))
 
 def count_calls(method: Callable) -> Callable:
-    call_counts = {}
+    key = method.__qualname__
 
     @wraps(method)
     def wrapper(self, *args, **kwargs):
-        key = method.__qualname__
-        if key not in call_counts:
-            call_counts[key] = 0
-        call_counts[key] += 1
+        """wrrapped function"""
+        self._redis.incr(key)
         result = method(self, *args, **kwargs)
         return result
     
     return wrapper
 
 @count_calls
-def store(self, data):
+def store(self, data: Union[str, bytes, int, float]) -> str:
     random_key = str(uuid.uuid4())
     self._redis.set(random_key, data)
     return random_key
