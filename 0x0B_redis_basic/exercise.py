@@ -2,11 +2,10 @@
 """
     String Redis
 """
-import redis 
+import redis
 import uuid
 from typing import Union, Callable
 from functools import wraps
-
 
 
 def count_calls(method: Callable) -> Callable:
@@ -32,17 +31,19 @@ def call_history(method: Callable) -> Callable:
         result = str(method(self, *args, **kwargs))
         self._redis.rpush(method.__qualname__ + ":outputs", result)
         return result
-    
+
     return wrapper
 
 
-def replay(cache, method_name):
-    history_key = method_name + ":inputs"
+def replay(cache, method):
+    """replay method"""
+    history_key = method.__qualname__ + ":inputs"
     call_history = cache._redis.lrange(history_key, 0, -1)
 
-    print("Replay for {}: ".format(method_name))
+    print("Replay for {}: ".format(method.__qualname__))
     input_history = call_history[::2]
     output_history = call_history[1::2]
+
     for inputs, output in zip(input_history, output_history):
         print("Inputs: ", inputs.decode())
         print("outputs", output.decode())
@@ -56,7 +57,6 @@ class Cache:
         self._redis.flushdb()
 
 
-    
     @call_history
     @count_calls
     def store(self, data: Union[str, bytes, int, float]) -> str:
@@ -74,11 +74,9 @@ class Cache:
             return fn(data)
         else:
             return data
-    
 
     def get_str(self, key):
         return self.get(key, fn=lambda data: data.decode())
-
 
     def get_int(self, key):
         return self.get(key, fn=lambda data: int(data.decode()))
