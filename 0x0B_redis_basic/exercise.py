@@ -38,7 +38,7 @@ class Cache:
 
     
     @call_history
-    @count_calls
+    
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """ generate a random key (e.g. using uuid), store the input data in
         Redis using the random key and return the key """
