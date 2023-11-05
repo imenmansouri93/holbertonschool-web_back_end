@@ -4,6 +4,19 @@ import uuid
 from typing import Union, Callable
 from functools import wraps
 
+
+def count_calls(method: Callable) -> Callable:
+    key = method.__qualname__
+
+    @wraps(method)
+    def wrapper(self, *args, **kwargs):
+        """wrrapped function"""
+        self._redis.incr(key)
+        result = method(self, *args, **kwargs)
+        return result
+    
+    return wrapper
+
 class Cache:
     def __init__(self):
         """Create a Redis client instance and store it as a private variable"""
@@ -12,13 +25,15 @@ class Cache:
         self._redis.flushdb()
 
 
+    
+    
+    @count_calls
     def store(self, data: Union[str, bytes, int, float]) -> str:
-        """Generate a random key using UUID"""
-        Random_key = str(uuid.uuid4())
-        """Store the input data in Redis using the random key"""
-        self._redis.set(Random_key, data)
-        """return random key"""
-        return Random_key
+        """ generate a random key (e.g. using uuid), store the input data in
+        Redis using the random key and return the key """
+        key = str(uuid.uuid4())
+        self._redis.set(key, data)
+        return ke
 
 
     def get(self, key, fn=None):
@@ -35,17 +50,7 @@ class Cache:
     def get_int(self, key):
         return self.get(key, fn=lambda data: int(data.decode()))
 
-def count_calls(method: Callable) -> Callable:
-    key = method.__qualname__
 
-    @wraps(method)
-    def wrapper(self, *args, **kwargs):
-        """wrrapped function"""
-        self._redis.incr(key)
-        result = method(self, *args, **kwargs)
-        return result
-    
-    return wrapper
 
 @count_calls
 def store(self, data: Union[str, bytes, int, float]) -> str:
