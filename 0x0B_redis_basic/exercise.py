@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import redis 
 import uuid
-from typing import Union
+from typing import Union, Callable
 from functools import wraps
 
 class Cache:
@@ -35,7 +35,7 @@ class Cache:
     def get_int(self, key):
         return self.get(key, fn=lambda data: int(data.decode()))
 
-def count_calls(method):
+def count_calls(method: Callable) -> Callable:
     call_counts = {}
 
     @wraps(method)
