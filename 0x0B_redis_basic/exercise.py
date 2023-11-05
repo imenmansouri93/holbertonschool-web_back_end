@@ -4,15 +4,16 @@ import uuid
 from typing import Union, Callable
 from functools import wraps
 
-
-def count_calls(method: Callable) -> Callable:
-    key = method.__qualname__
-
+    
+def call_history(method: Callable) -> Callable:
     @wraps(method)
     def wrapper(self, *args, **kwargs):
         """wrrapped function"""
-        self._redis.incr(key)
+        history_key = method.__qualname__ + "_history"
+        """ Store the input arguments in the history"""
+        self._redis.rpush(history_key, str(args))
         result = method(self, *args, **kwargs)
+        self._redis.rpush(history_key, str(result))
         return result
     
     return wrapper
@@ -26,8 +27,7 @@ class Cache:
 
 
     
-    
-    @count_calls
+    @call_history
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """ generate a random key (e.g. using uuid), store the input data in
         Redis using the random key and return the key """
