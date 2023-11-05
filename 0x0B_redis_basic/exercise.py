@@ -1,11 +1,16 @@
 #!/usr/bin/env python3
+"""
+    String Redis
+"""
 import redis 
 import uuid
 from typing import Union, Callable
 from functools import wraps
 
 
+
 def count_calls(method: Callable) -> Callable:
+    """ Decorator count calls """
     key = method.__qualname__
 
     @wraps(method)
@@ -14,9 +19,11 @@ def count_calls(method: Callable) -> Callable:
         self._redis.incr(key)
         return method(self, *args, **kwds)
     return wrapper
-    
+
+
 def call_history(method: Callable) -> Callable:
     """Decorator call history"""
+
     @wraps(method)
     def wrapper(self, *args, **kwargs):
         """wrrapped function"""
@@ -28,13 +35,19 @@ def call_history(method: Callable) -> Callable:
     
     return wrapper
 
+
 def replay(cache, method_name):
     history_key = method_name + ":inputs"
     call_history = cache._redis.lrange(history_key, 0, -1)
 
     print("Replay for {}: ".format(method_name))
-    for entry in call_history:
-        print(entry.decode())
+    input_history = call_history[::2]
+    output_history = call_history[1::2]
+    for inputs, output in zip(input_history, output_history):
+        print("Inputs: ", inputs.decode())
+        print("outputs", output.decode())
+
+
 class Cache:
     def __init__(self):
         """Create a Redis client instance and store it as a private variable"""
@@ -62,9 +75,10 @@ class Cache:
         else:
             return data
     
+
     def get_str(self, key):
         return self.get(key, fn=lambda data: data.decode())
 
+
     def get_int(self, key):
         return self.get(key, fn=lambda data: int(data.decode()))
-
