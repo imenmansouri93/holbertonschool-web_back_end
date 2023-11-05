@@ -39,10 +39,12 @@ def replay(cache, method):
     """replay method"""
     history_key = method.__qualname__ + ":inputs"
     call_history = cache._redis.lrange(history_key, 0, -1)
-
-    for inputs, output in zip(call_history[::2], call_history[1::2]):
-        print("Inputs: ", inputs.decode())
-        print("outputs", output.decode())
+    if len(call_history) % 2 == 0:
+        for inputs, output in zip(call_history[::2], call_history[1::2]):
+            print("Inputs: ", inputs.decode())
+            print("outputs", output.decode())
+    else:
+        print("Call history is incomplete or has an odd number of elements.")
 
 
 class Cache:
@@ -62,7 +64,6 @@ class Cache:
         self._redis.set(key, data)
         return key
 
-
     def get(self, key, fn=None):
         """Retrieve the data from the cach"""
         data = self._redis.get(key)
@@ -72,7 +73,9 @@ class Cache:
             return data
 
     def get_str(self, key):
+        """get-str function"""
         return self.get(key, fn=lambda data: data.decode())
 
     def get_int(self, key):
+        """get-int function"""
         return self.get(key, fn=lambda data: int(data.decode()))
