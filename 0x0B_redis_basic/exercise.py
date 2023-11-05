@@ -28,6 +28,13 @@ def call_history(method: Callable) -> Callable:
     
     return wrapper
 
+def replay(cache, method_name):
+    history_key = method_name + ":inputs"
+    call_history = cache._redis.lrange(history_key, 0, -1)
+
+    print("Replay for {}: ".format(method_name))
+    for entry in call_history:
+        print(entry.decode())
 class Cache:
     def __init__(self):
         """Create a Redis client instance and store it as a private variable"""
