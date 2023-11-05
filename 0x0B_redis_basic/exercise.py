@@ -48,3 +48,9 @@ def count_calls(method):
         return result
     
     return wrapper
+
+@count_calls
+def store(self, data):
+    random_key = str(uuid.uuid4())
+    self._redis.set(random_key, data)
+    return random_key
