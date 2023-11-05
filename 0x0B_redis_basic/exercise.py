@@ -16,10 +16,11 @@ def count_calls(method: Callable) -> Callable:
     return wrapper
     
 def call_history(method: Callable) -> Callable:
+    """Decorator call history"""
     @wraps(method)
     def wrapper(self, *args, **kwargs):
         """wrrapped function"""
-        history_key = method.__qualname__ + "_history"
+        history_key = method.__qualname__ + ":_history"
         """ Store the input arguments in the history"""
         self._redis.rpush(history_key, str(args))
         result = method(self, *args, **kwargs)
@@ -38,7 +39,7 @@ class Cache:
 
     
     @call_history
-    
+    @count_calls
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """ generate a random key (e.g. using uuid), store the input data in
         Redis using the random key and return the key """
