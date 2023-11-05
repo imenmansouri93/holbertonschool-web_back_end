@@ -33,7 +33,7 @@ class Cache:
         Redis using the random key and return the key """
         key = str(uuid.uuid4())
         self._redis.set(key, data)
-        return ke
+        return key
 
 
     def get(self, key, fn=None):
@@ -50,10 +50,3 @@ class Cache:
     def get_int(self, key):
         return self.get(key, fn=lambda data: int(data.decode()))
 
-
-
-@count_calls
-def store(self, data: Union[str, bytes, int, float]) -> str:
-    random_key = str(uuid.uuid4())
-    self._redis.set(random_key, data)
-    return random_key
