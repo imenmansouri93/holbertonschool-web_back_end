@@ -2,6 +2,7 @@
 import redis 
 import uuid
 from typing import Union
+from functools import wraps
 
 class Cache:
     def __init__(self):
@@ -33,3 +34,17 @@ class Cache:
 
     def get_int(self, key):
         return self.get(key, fn=lambda data: int(data.decode()))
+
+def count_calls(method):
+    call_counts = {}
+
+    @wraps(method)
+    def wrapper(self, *args, **kwargs):
+        key = method.__qualname__
+        if key not in call_counts:
+            call_counts[key] = 0
+        call_counts[key] += 1
+        result = method(self, *args, **kwargs)
+        return result
+    
+    return wrapper
