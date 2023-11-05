@@ -40,22 +40,18 @@ def replay(cache, method):
     history_key = method.__qualname__ + ":inputs"
     call_history = cache._redis.lrange(history_key, 0, -1)
 
-    print("Replay for {}: ".format(method.__qualname__))
-    input_history = call_history[::2]
-    output_history = call_history[1::2]
-
-    for inputs, output in zip(input_history, output_history):
+    for inputs, output in zip(call_history[::2], call_history[1::2]):
         print("Inputs: ", inputs.decode())
         print("outputs", output.decode())
 
 
 class Cache:
+    """Cache"""
     def __init__(self):
         """Create a Redis client instance and store it as a private variable"""
         self._redis = redis.Redis()
         """ Flush the Redis database to start with an empty cache"""
         self._redis.flushdb()
-
 
     @call_history
     @count_calls
