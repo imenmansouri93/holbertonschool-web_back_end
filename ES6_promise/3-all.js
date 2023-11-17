@@ -5,10 +5,10 @@ function handleProfileSignup() {
     .then((values) => {
       const { body } = values[0];
       const { firsName } = values[1];
-      const { lastName } = values[2];
+      const { lastName } = values[1];
       console.log(`${body} ${firsName} ${lastName}`);
     })
     .catch(() => console.log('Signup system offline'));
 }
 
-export default handleProfileSignup();
+export default handleProfileSignup;
