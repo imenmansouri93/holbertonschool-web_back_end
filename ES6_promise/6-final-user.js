@@ -22,8 +22,8 @@ function handleProfileSignup(firstName, lastName, fileName) {
     promise2.status = 'fulfilled';
     promise2.value = signup;
   } catch (error) {
-    promise1.status = 'rejected';
-    promise1.value = error.toString();
+    promise2.status = 'rejected';
+    promise2.value = error.toString();
   }
 
   return [promise2, promise1];
