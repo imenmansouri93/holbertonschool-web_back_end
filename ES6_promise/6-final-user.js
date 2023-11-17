@@ -1,7 +1,7 @@
 import signUpUser from './4-user-promise';
 import uploadPhoto from './5-photo-reject';
 
-function handleProfileSignup(firstName, lastName, fileName) {
+async function handleProfileSignup(firstName, lastName, fileName) {
   const promise1 = {
     status: 'pending',
   };
@@ -9,7 +9,7 @@ function handleProfileSignup(firstName, lastName, fileName) {
     status: 'pending',
   };
   try {
-    const upload = uploadPhoto(fileName);
+    const upload = await uploadPhoto(fileName);
     promise1.status = 'fulfilled';
     promise1.value = upload;
   } catch (error) {
@@ -17,7 +17,7 @@ function handleProfileSignup(firstName, lastName, fileName) {
     promise1.value = error.toString();
   }
   try {
-    const signup = signUpUser(firstName, lastName);
+    const signup = await signUpUser(firstName, lastName);
     promise2.status = 'fulfilled';
     promise2.value = signup;
   } catch (error) {
